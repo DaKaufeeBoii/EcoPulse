@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoPulse — Environmental Health Telemetry Dashboard</title>
+  <meta name="description" content="Cross-track environmental monitoring dashboard covering AirGuard (Air), LeakLens (Water Conservation), and EcoSort (Waste & Energy).">
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-fluid">
+  <!-- Dynamic Atmospheric Background Canvas/Particles -->
+  <div class="bg-effects" id="bg-effects">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="top-nav">
+    <div class="nav-brand">
+      <div class="brand-symbol">
+        <span class="symbol-icon" id="brand-icon">💧</span>
+      </div>
+      <div class="brand-text">
+        <h1 class="brand-title">EcoPulse</h1>
+        <span class="brand-subtitle" id="track-subtitle">LeakLens &bull; Fluid Architecture</span>
+      </div>
+    </div>
+
+    <!-- Themed Track Switcher -->
+    <nav class="track-switcher" aria-label="Track Navigation">
+      <button class="track-btn" id="btn-track-air" data-track="air" data-theme="theme-windy">
+        <span class="track-icon">🌬️</span>
+        <span class="track-label">AirGuard</span>
+        <span class="theme-badge">Windy</span>
+      </button>
+
+      <button class="track-btn active" id="btn-track-water" data-track="water" data-theme="theme-fluid">
+        <span class="track-icon">💧</span>
+        <span class="track-label">LeakLens</span>
+        <span class="theme-badge centerpiece">Fluid &bull; Core</span>
+      </button>
+
+      <button class="track-btn" id="btn-track-waste" data-track="waste" data-theme="theme-nuclear">
+        <span class="track-icon">☢️</span>
+        <span class="track-label">EcoSort</span>
+        <span class="theme-badge">Nuclear</span>
+      </button>
+    </nav>
+
+    <!-- Global Controls -->
+    <div class="nav-controls">
+      <div class="location-select-wrap">
+        <label for="location-select" class="sr-only">Select Location</label>
+        <select id="location-select" class="nav-select">
+          <option value="">All Locations</option>
+          <option value="LOC-001" selected>LOC-001 (Demo 1)</option>
+          <option value="LOC-002">LOC-002 (Demo 2)</option>
+          <option value="LOC-003">LOC-003 (Demo 3)</option>
+        </select>
+      </div>
+
+      <button id="btn-seed-data" class="action-btn-sm" title="Seed sample datasets">
+        <span class="btn-icon">⚡</span> Seed Demo
+      </button>
+
+      <div class="api-status-badge" id="api-status" title="FastAPI Backend Status">
+        <span class="status-dot"></span>
+        <span class="status-text">Backend Live</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Viewport -->
+  <main class="dashboard-container">
+    
+    <!-- ============================================================ -->
+    <!-- TRACK 2: LEAKLENS (WATER - FLUID THEME) ★ CENTERPIECE -->
+    <!-- ============================================================ -->
+    <section id="view-water" class="track-view active">
+      <div class="track-hero">
+        <div class="hero-header">
+          <div class="track-tag fluid-tag">Track 2 &bull; Heat and Water Centerpiece</div>
+          <h2>LeakLens Smart Water & Leak Detection System</h2>
+          <p class="hero-desc">Real-time meter telemetry, excess consumption diagnostic algorithms, and active leak containment.</p>
+        </div>
+        <div class="hero-meta">
+          <div class="kpi-mini-card">
+            <span class="kpi-label">Active Leaks</span>
+            <span class="kpi-value alert-val" id="water-active-leaks-count">0</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-label">Avg Daily Usage</span>
+            <span class="kpi-value" id="water-avg-daily-usage">-- L</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fluid Dashboard Grid -->
+      <div class="fluid-grid">
+        
+        <!-- Fluid Water Tank Level Gauge -->
+        <div class="glass-card fluid-tank-card">
+          <div class="card-header">
+            <h3>Fluid Water Tank Level</h3>
+            <span class="live-indicator">LIVE GAUGE</span>
+          </div>
+          <div class="tank-visual-wrap">
+            <div class="cylinder-tank">
+              <div class="tank-measurement-lines">
+                <span>5000L</span>
+                <span>4000L</span>
+                <span>3000L</span>
+                <span>2000L</span>
+                <span>1000L</span>
+                <span>0L</span>
+              </div>
+              <div class="liquid-body" id="tank-liquid" style="height: 68%;">
+                <div class="wave-surface wave-1"></div>
+                <div class="wave-surface wave-2"></div>
+                <div class="liquid-glow"></div>
+              </div>
+            </div>
+            <div class="tank-stats">
+              <div class="tank-pct" id="tank-level-pct">68%</div>
+              <div class="tank-liters" id="tank-level-liters">3,400 L Remaining</div>
+              <div class="tank-status-pill normal" id="tank-status-pill">Nominal Pressure</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Water Assessment Calculator -->
+        <div class="glass-card water-calc-card">
+          <div class="card-header">
+            <h3>Water Meter Consumption Calculator</h3>
+            <span class="badge-sub">Diagnostic Engine</span>
+          </div>
+          <form id="form-water-assess" class="calc-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="w-prev-reading">Previous Reading (Liters)</label>
+                <input type="number" id="w-prev-reading" class="form-input" value="12000" min="0" required>
+              </div>
+              <div class="form-group">
+                <label for="w-curr-reading">Current Reading (Liters)</label>
+                <input type="number" id="w-curr-reading" class="form-input" value="12850" min="0" required>
+              </div>
+            </div>
+
+            <div class="form-row three-col">
+              <div class="form-group">
+                <label for="w-days">Days Between</label>
+                <input type="number" id="w-days" class="form-input" value="2" min="0.1" step="0.5" required>
+              </div>
+              <div class="form-group">
+                <label for="w-household">Household Size</label>
+                <input type="number" id="w-household" class="form-input" value="4" min="1" required>
+              </div>
+              <div class="form-group">
+                <label for="w-baseline">Baseline (L/person/day)</label>
+                <input type="number" id="w-baseline" class="form-input" value="100" min="1">
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary fluid-btn" id="btn-assess-water">
+              <span>Run Assessment Diagnostic</span>
+            </button>
+          </form>
+
+          <!-- Assessment Result Display -->
+          <div class="assess-result-box" id="water-assess-result">
+            <div class="result-header">
+              <span class="result-title">Diagnostic Assessment:</span>
+              <span class="severity-badge" id="w-res-severity">normal</span>
+            </div>
+            <div class="result-kpis">
+              <div>
+                <span class="r-label">Daily Usage</span>
+                <span class="r-val" id="w-res-daily">--</span>
+              </div>
+              <div>
+                <span class="r-label">Per Person</span>
+                <span class="r-val" id="w-res-person">--</span>
+              </div>
+              <div>
+                <span class="r-label">Excess Water</span>
+                <span class="r-val" id="w-res-excess">--</span>
+              </div>
+            </div>
+            <p class="result-explanation" id="w-res-explanation">Fill in your meter readings above to evaluate consumption against household benchmarks.</p>
+            <div class="result-rec" id="w-res-recommendation"></div>
+          </div>
+        </div>
+
+        <!-- Water Leak Incident Reporter -->
+        <div class="glass-card leak-report-card">
+          <div class="card-header">
+            <h3>Report Water Leak / Overflow</h3>
+            <span class="badge-sub">Urgent Dispatch</span>
+          </div>
+          <form id="form-leak-report" class="leak-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="leak-area">Suspected Leak Area</label>
+                <select id="leak-area" class="form-input" required>
+                  <option value="taps">Taps / Faucets</option>
+                  <option value="pipes">Supply / Drainage Pipes</option>
+                  <option value="toilet">Toilet Flush / Cistern</option>
+                  <option value="tank">Overhead Storage Tank</option>
+                  <option value="meter">Main Meter Connection</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="leak-severity">Observed Severity</label>
+                <select id="leak-severity" class="form-input" required>
+                  <option value="low">Low (Slow Drip)</option>
+                  <option value="medium" selected>Medium (Continuous Stream)</option>
+                  <option value="high">High (Flooding / Gushing)</option>
+                  <option value="critical">Critical (Main Pipe Burst)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="leak-desc">Incident Description</label>
+              <textarea id="leak-desc" class="form-input" rows="2" placeholder="Damp wall in ground floor utility room with rapid meter spin..." required></textarea>
+            </div>
+            <button type="submit" class="btn-alert fluid-alert-btn">
+              <span>Submit Leak Report</span>
+            </button>
+          </form>
+
+          <!-- Recent Leaks Feed -->
+          <div class="recent-leaks-feed">
+            <h4 class="subhead">Active Leak Records</h4>
+            <div class="leaks-list" id="leaks-list-container">
+              <div class="empty-feed">No active leaks reported.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meter Readings Log -->
+        <div class="glass-card meter-readings-card">
+          <div class="card-header">
+            <h3>Historical Meter Log</h3>
+            <span class="badge-sub">Cumulative Telemetry</span>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="water-readings-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Reading ID</th>
+                  <th>Location</th>
+                  <th>Cumulative (L)</th>
+                </tr>
+              </thead>
+              <tbody id="water-readings-tbody">
+                <tr><td colspan="4" class="text-center">Loading readings...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- TRACK 1: AIRGUARD (AIR - WINDY THEME) -->
+    <!-- ============================================================ -->
+    <section id="view-air" class="track-view">
+      <div class="track-hero">
+        <div class="hero-header">
+          <div class="track-tag windy-tag">Track 1 &bull; Air Quality Telemetry</div>
+          <h2>AirGuard Aerodynamic AQI Telemetry</h2>
+          <p class="hero-desc">Atmospheric particulate detection, real-time AQI health risk classification, and outdoor activity advisories.</p>
+        </div>
+      </div>
+
+      <div class="windy-grid">
+        
+        <!-- Radial AQI Gauge & Simulator -->
+        <div class="glass-card windy-gauge-card">
+          <div class="card-header">
+            <h3>Real-Time Air Quality Index</h3>
+            <span class="live-indicator-wind">ATMOSPHERIC FLOW</span>
+          </div>
+
+          <div class="aqi-circle-wrap">
+            <svg class="aqi-radial-svg" viewBox="0 0 200 200">
+              <circle class="aqi-bg-ring" cx="100" cy="100" r="80"></circle>
+              <circle class="aqi-val-ring" id="aqi-progress-ring" cx="100" cy="100" r="80"></circle>
+            </svg>
+            <div class="aqi-circle-content">
+              <span class="aqi-numeric" id="air-aqi-val">42</span>
+              <span class="aqi-category-pill good" id="air-category-pill">Good</span>
+              <span class="aqi-risk-label" id="air-risk-label">Low Risk</span>
+            </div>
+          </div>
+
+          <!-- Interactive AQI Simulator / Submission -->
+          <form id="form-air-assess" class="windy-form">
+            <div class="form-group">
+              <div class="label-row">
+                <label for="air-input-aqi">Simulate / Log AQI Value (0 - 500)</label>
+                <span class="badge-val" id="air-slider-disp">42</span>
+              </div>
+              <input type="range" id="air-input-aqi" min="0" max="500" value="42" class="slider-input">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="air-source">Observation Source</label>
+                <input type="text" id="air-source" class="form-input" value="IoT Station Alpha" required>
+              </div>
+              <div class="form-group">
+                <label for="air-dominant">Dominant Pollutant</label>
+                <select id="air-dominant" class="form-input">
+                  <option value="PM2.5" selected>PM2.5 (Fine Particulates)</option>
+                  <option value="PM10">PM10 (Coarse Dust)</option>
+                  <option value="NO2">NO2 (Nitrogen Dioxide)</option>
+                  <option value="O3">O3 (Ground-level Ozone)</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary windy-btn">
+              <span>Log Observation & Update Advisory</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Outdoor Precautions & Health Alerts -->
+        <div class="glass-card windy-advisory-card">
+          <div class="card-header">
+            <h3>Outdoor Precaution Checklist</h3>
+            <span class="badge-sub">Health Protocol</span>
+          </div>
+
+          <div class="health-implications-banner" id="air-health-banner">
+            <span class="info-icon">🌿</span>
+            <p id="air-health-text">Air quality is satisfactory, and air pollution poses little or no risk.</p>
+          </div>
+
+          <div class="precautions-checklist" id="air-precautions-list">
+            <div class="precaution-item">
+              <span class="check-icon">✓</span>
+              <span>Air quality is ideal for outdoor sports and activities.</span>
+            </div>
+            <div class="precaution-item">
+              <span class="check-icon">✓</span>
+              <span>Safe to ventilate indoor living spaces.</span>
+            </div>
+          </div>
+
+          <!-- Wind Telemetry -->
+          <div class="wind-telemetry-box">
+            <h4>Wind & Atmospheric Conditions</h4>
+            <div class="wind-metrics">
+              <div class="wind-item">
+                <span class="w-label">Wind Speed</span>
+                <span class="w-val">14 km/h SW</span>
+              </div>
+              <div class="wind-item">
+                <span class="w-label">Atm. Humidity</span>
+                <span class="w-val">62%</span>
+              </div>
+              <div class="wind-item">
+                <span class="w-label">Dispersal Rate</span>
+                <span class="w-val">Favorable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Air Observations Table -->
+        <div class="glass-card air-table-card full-width">
+          <div class="card-header">
+            <h3>Recent Atmospheric Observations</h3>
+            <span class="badge-sub">Regional Telemetry</span>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="air-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Location</th>
+                  <th>AQI</th>
+                  <th>Category</th>
+                  <th>Risk Level</th>
+                  <th>Pollutant</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody id="air-tbody">
+                <tr><td colspan="7" class="text-center">Loading air records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- TRACK 3: ECOSORT (WASTE & ENERGY - NUCLEAR THEME) -->
+    <!-- ============================================================ -->
+    <section id="view-waste" class="track-view">
+      <div class="track-hero">
+        <div class="hero-header">
+          <div class="track-tag nuclear-tag">Track 3 &bull; Waste & Energy Reactor</div>
+          <h2>EcoSort High-Voltage Diversion Core</h2>
+          <p class="hero-desc">Material segregation logging, landfill diversion metrics, and recovered energy kilowatt-hour calculations.</p>
+        </div>
+      </div>
+
+      <div class="nuclear-grid">
+        
+        <!-- Nuclear Reactor Diversion Core Gauge -->
+        <div class="glass-card nuclear-core-card">
+          <div class="card-header">
+            <h3>Reactor Diversion Core Gauge</h3>
+            <span class="live-indicator-nuclear">CORE ACTIVE</span>
+          </div>
+
+          <div class="reactor-core-wrap">
+            <div class="reactor-core-ring">
+              <div class="pulsing-atom"></div>
+              <div class="core-pct-display">
+                <span class="core-rate" id="waste-diversion-rate">75.0%</span>
+                <span class="core-sub">LANDFILL DIVERTED</span>
+              </div>
+            </div>
+            <div class="core-breakdown">
+              <div class="core-stat-item">
+                <span class="cs-label">Total Mass Processed</span>
+                <span class="cs-val" id="waste-total-kg">-- kg</span>
+              </div>
+              <div class="core-stat-item">
+                <span class="cs-label">Grid Energy Recovered</span>
+                <span class="cs-val neon-green" id="waste-energy-kwh">-- kWh</span>
+              </div>
+              <div class="core-stat-item">
+                <span class="cs-label">CO2 Carbon Avoided</span>
+                <span class="cs-val neon-green" id="waste-co2-tons">-- kg CO2</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Sorting Directives -->
+          <div class="nuclear-directives-box">
+            <h4>Radiation / Material Containment Directives</h4>
+            <ul id="waste-recommendations-list" class="directives-list">
+              <li>Maintain strict source segregation across dry recyclable and organic fractions.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Waste Entry Terminal -->
+        <div class="glass-card nuclear-terminal-card">
+          <div class="card-header">
+            <h3>Log Waste Item / Feedstock</h3>
+            <span class="badge-sub">Disposal Terminal</span>
+          </div>
+
+          <form id="form-waste-entry" class="nuclear-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="waste-category">Material Category</label>
+                <select id="waste-category" class="form-input" required>
+                  <option value="plastic">Plastic (PET / HDPE / Mixed)</option>
+                  <option value="paper">Paper & Cardboard</option>
+                  <option value="organic">Organic / Kitchen Wet Waste</option>
+                  <option value="e-waste">E-Waste & Electronics</option>
+                  <option value="metal">Metal & Scrap Cans</option>
+                  <option value="glass">Glass Containers</option>
+                  <option value="hazardous">Hazardous / Batteries</option>
+                  <option value="textile">Textile / Fabrics</option>
+                  <option value="other">Other Solid Waste</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="waste-disposal">Disposal Protocol</label>
+                <select id="waste-disposal" class="form-input" required>
+                  <option value="recycling" selected>Recycling</option>
+                  <option value="composting">Composting</option>
+                  <option value="authorized_collection">Authorized Collection (E-Waste)</option>
+                  <option value="donated">Donation</option>
+                  <option value="landfill">Landfill Disposal</option>
+                  <option value="incinerated">Incinerated</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="waste-quantity">Quantity</label>
+                <input type="number" id="waste-quantity" class="form-input" value="1.5" min="0.01" step="0.1" required>
+              </div>
+              <div class="form-group">
+                <label for="waste-unit">Unit</label>
+                <select id="waste-unit" class="form-input" required>
+                  <option value="kg" selected>kg (Kilograms)</option>
+                  <option value="g">g (Grams)</option>
+                  <option value="lbs">lbs (Pounds)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="waste-notes">Terminal Notes (Optional)</label>
+              <input type="text" id="waste-notes" class="form-input" placeholder="Cleaned PET containers for recycling...">
+            </div>
+
+            <button type="submit" class="btn-primary nuclear-btn">
+              <span>Log Material Feedstock</span>
+            </button>
+          </form>
+
+          <!-- Real-Time Categorized Containment Cards -->
+          <div class="material-cards-grid" id="material-cards-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Waste Entries Feed Table -->
+        <div class="glass-card waste-table-card full-width">
+          <div class="card-header">
+            <h3>Feedstock Disposal Log</h3>
+            <span class="badge-sub">Telemetry Ledger</span>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" id="waste-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Entry ID</th>
+                  <th>Location</th>
+                  <th>Category</th>
+                  <th>Quantity</th>
+                  <th>Protocol</th>
+                  <th>Directives</th>
+                </tr>
+              </thead>
+              <tbody id="waste-tbody">
+                <tr><td colspan="7" class="text-center">Loading waste records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
