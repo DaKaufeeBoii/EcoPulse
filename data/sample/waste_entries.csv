@@ -1,0 +1,16 @@
+entry_id,location_id,timestamp,category,quantity,unit,disposal_method,source
+WST-001,LOC-001,2026-10-01T18:00:00+05:30,plastic,1.2,kg,recycling,synthetic_demo
+WST-002,LOC-001,2026-10-01T18:10:00+05:30,paper,850,g,recycling,synthetic_demo
+WST-003,LOC-001,2026-10-02T18:00:00+05:30,organic,2.4,kg,composting,synthetic_demo
+WST-004,LOC-001,2026-10-02T18:10:00+05:30,e_waste,0.6,kg,authorized_collection,synthetic_demo
+WST-005,LOC-002,2026-10-03T18:00:00+05:30,plastic,700,g,recycling,synthetic_demo
+WST-006,LOC-002,2026-10-03T18:10:00+05:30,paper,1.5,kg,recycling,synthetic_demo
+WST-007,LOC-002,2026-10-04T18:00:00+05:30,organic,3.1,kg,composting,synthetic_demo
+WST-008,LOC-002,2026-10-04T18:10:00+05:30,glass,900,g,recycling,synthetic_demo
+WST-009,LOC-003,2026-10-05T18:00:00+05:30,plastic,1.1,kg,landfill,synthetic_demo
+WST-010,LOC-003,2026-10-05T18:10:00+05:30,paper,650,g,recycling,synthetic_demo
+WST-011,LOC-003,2026-10-06T18:00:00+05:30,organic,2.8,kg,composting,synthetic_demo
+WST-012,LOC-003,2026-10-06T18:10:00+05:30,e_waste,350,g,authorized_collection,synthetic_demo
+WST-013,LOC-001,2026-10-07T18:00:00+05:30,glass,1.0,kg,recycling,synthetic_demo
+WST-014,LOC-002,2026-10-07T18:10:00+05:30,plastic,450,g,landfill,synthetic_demo
+WST-015,LOC-003,2026-10-08T18:00:00+05:30,paper,1.3,kg,recycling,synthetic_demo

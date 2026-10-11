@@ -1,0 +1,11 @@
+observation_id,location_id,timestamp,aqi,aqi_category,prominent_pollutant,source
+AIR-001,LOC-001,2026-10-01T08:00:00+05:30,42,Good,PM2.5,synthetic_demo
+AIR-002,LOC-001,2026-10-01T14:00:00+05:30,78,Satisfactory,PM10,synthetic_demo
+AIR-003,LOC-001,2026-10-02T08:00:00+05:30,132,Moderate,PM2.5,synthetic_demo
+AIR-004,LOC-001,2026-10-02T14:00:00+05:30,218,Poor,PM10,synthetic_demo
+AIR-005,LOC-002,2026-10-03T08:00:00+05:30,326,Very Poor,PM2.5,synthetic_demo
+AIR-006,LOC-002,2026-10-03T14:00:00+05:30,421,Severe,PM2.5,synthetic_demo
+AIR-007,LOC-002,2026-10-04T08:00:00+05:30,56,Satisfactory,NO2,synthetic_demo
+AIR-008,LOC-003,2026-10-04T14:00:00+05:30,184,Moderate,PM10,synthetic_demo
+AIR-009,LOC-003,2026-10-05T08:00:00+05:30,95,Satisfactory,PM2.5,synthetic_demo
+AIR-010,LOC-003,2026-10-05T14:00:00+05:30,274,Poor,PM2.5,synthetic_demo
