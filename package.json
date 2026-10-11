@@ -1,0 +1,19 @@
+{
+  "name": "ecopulse",
+  "version": "0.1.0",
+  "description": "EcoPulse Environmental Health Telemetry Dashboard",
+  "scripts": {
+    "dev": ".\\.venv\\Scripts\\uvicorn.exe app.main:app --port 8001 --reload",
+    "start": ".\\.venv\\Scripts\\uvicorn.exe app.main:app --port 8001",
+    "test": ".\\.venv\\Scripts\\pytest.exe tests"
+  },
+  "keywords": [
+    "environment",
+    "telemetry",
+    "water",
+    "air",
+    "waste"
+  ],
+  "author": "DaKaufeeBoii",
+  "license": "MIT"
+}
